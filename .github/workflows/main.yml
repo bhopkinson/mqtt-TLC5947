@@ -9,13 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      DOCKER_REGISTRY: kemansel.azurecr.io
-      DOCKER_IMAGE: bjh101/mqtt-TLC5947
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      DOCKER_TARGET_PLATFORM: linux/arm/v7
-
     steps:
       -
         name: Set up QEMU
@@ -36,8 +29,8 @@ jobs:
         with:
           push: true
           tags: |
-            bjh101/mqtt-TLC5947:latest
-            bjh101/mqtt-TLC5947:{{ GITHUB_RUN_NUMBER }}
+            bjh101/mqtt-tlc5947:latest
+            bjh101/mqtt-tlc5947:{{ GITHUB_RUN_NUMBER }}
           platforms: linux/arm/v7
       -
         name: Image digest
