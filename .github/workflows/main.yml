@@ -11,11 +11,6 @@ jobs:
 
     steps:
       -
-        name: Setup env
-        uses: jwulf/add-env-vars-action@master
-        with:
-          map: '{"run_number": "${{ github.run_number }}"}'   
-      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       -
@@ -35,7 +30,7 @@ jobs:
           push: true
           tags: |
             bjh101/mqtt-tlc5947:latest
-            bjh101/mqtt-tlc5947:${{ env.run_number }}
+            bjh101/mqtt-tlc5947:${{ github.run_number }}
           platforms: linux/arm/v7
       -
         name: Image digest
