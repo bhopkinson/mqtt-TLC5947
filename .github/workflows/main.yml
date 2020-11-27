@@ -30,7 +30,7 @@ jobs:
           push: true
           tags: |
             bjh101/mqtt-tlc5947:latest
-            bjh101/mqtt-tlc5947:{{ GITHUB_RUN_NUMBER }}
+            bjh101/mqtt-tlc5947:${{ GITHUB_RUN_NUMBER }}
           platforms: linux/arm/v7
       -
         name: Image digest
