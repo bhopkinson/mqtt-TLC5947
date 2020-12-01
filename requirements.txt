@@ -1,1 +1,2 @@
 paho-mqtt
+adafruit-circuitpython-tlc5947
