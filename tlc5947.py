@@ -1,11 +1,23 @@
+#import datetime
 # import adafruit_tlc5947
 # import board
 # import busio
 # import digitalio
+import environment as env
+import math
+
+numberOfLeds = 24
+
+def getBoardNumber(addr):
+    return math.ceil(addr / numberOfLeds)
+
+def getLedNumber(addr):
+    boardNumber = getBoardNumber(addr)
+    return addr - ((boardNumber - 1) * numberOfLeds)
 
 class tlc5947:
-    def __init__(self, driverCount):
-        self.numberOfLeds = driverCount * 24
+    def __init__(self):
+        self.numberOfLeds = env.driverCount * numberOfLeds
         
         # spi = busio.SPI(board.SCLK, board.MOSI, board.MISO)
         # latch = digitalio.DigitalInOut(board.D4)

@@ -1,0 +1,6 @@
+tilde = "~"
+unique_id = "unique_id"
+command_topic = "command_topic"
+schema = "schema"
+brightness = "brightness"
+light = "light"

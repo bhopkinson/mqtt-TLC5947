@@ -6,15 +6,11 @@ import mqtt
 import tlc5947
 import queuehandler
 
-broker = os.getenv("BROKER")
-topic = os.getenv("TOPIC")
-driverCount = os.getenv("DRIVER_COUNT")
+mqtt = mqtt.Mqtt()
+mqtt.connect()
+led.mqtt = mqtt
 
-broker = "192.168.0.23"
-topic = "test/topic"
-driverCount = 1
-
-tlc5947 = tlc5947.tlc5947(driverCount)
+tlc5947 = tlc5947.tlc5947()
 
 def on_instruction(instruction):
     tlc5947.handle(instruction)
@@ -36,6 +32,4 @@ def on_message(message):
     if message.topic.endswith("set"):
         commandHandler.handle(command.command(message))
 
-mqtt = mqtt.Mqtt(broker, topic)
 mqtt.set_on_message_callback(on_message)
-mqtt.connect_forever()

@@ -13,7 +13,7 @@ class command:
         self.transition = parsedMessage["transition"]
 
     def __getLedAddr(self, topic):
-        boardNumber = int(re.search(r"(?<=driver_)\d*", topic).group())
-        ledNumber = int(re.search(r"(?<=led_)\d*", topic).group())
+        boardNumber = int(re.search(r"(?<=driver-)\d*", topic).group())
+        ledNumber = int(re.search(r"(?<=led-)\d*", topic).group())
 
         return boardNumber * ledNumber

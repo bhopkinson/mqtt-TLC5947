@@ -1,10 +1,11 @@
+import discovery
+import environment as env
+import json
 import paho.mqtt.client as mqtt
 
 class Mqtt:
-    def __init__(self, broker, topic):
+    def __init__(self):
         self.client = mqtt.Client()
-        self.broker = broker
-        self.topic = topic
 
     def __on_message(self, client, userdata, message):
         print("Message received: " + message.payload.decode())
@@ -18,20 +19,20 @@ class Mqtt:
     def __on_disconnect(self, client, userdata, rc):
         print("Disconnected from MQTT, reason code %d\n", rc)
 
-    def connect_forever(self):
+    def connect(self):
         client = self.client
-        status_topic = f"{self.topic}/status"
+        status_topic = f"{env.topic}/status"
 
         if (not client.on_connect) : client.on_connect = self.__on_connect
         if (not client.on_message) : client.on_message = self.__on_message
 
         client.will_set(status_topic, payload="Offline", retain=True)
-        client.connect(self.broker)
+        client.connect(env.broker)
         client.publish(status_topic, payload="Online", retain=True)
 
-        client.subscribe(f"{self.topic}/+/+/set", qos=1)
+        client.subscribe(f"{env.topic}/+/+/set", qos=1)
 
-        client.loop_forever()
+        client.loop_start()
 
     def set_on_message_callback(self, callback):
         def on_message(client, userdata, message):
@@ -39,3 +40,12 @@ class Mqtt:
             callback(message)
 
         self.client.on_message = on_message
+
+    def send_discovery_message(self, message, subTopic, uniqueId, type):
+        if (env.discoveryTopic):
+            message[discovery.tilde] = f"{env.topic}/{subTopic}"
+            unique_id = f"{env.client_id}_{uniqueId}"
+            message[discovery.unique_id] = unique_id
+            payload = json.dumps(message)
+            topic = f"{env.discoveryTopic}/{type}/{unique_id}/config"
+            self.client.publish(topic, payload, qos=0, retain=True)
