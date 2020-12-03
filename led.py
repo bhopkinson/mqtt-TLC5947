@@ -53,11 +53,13 @@ class led:
         subTopic = f"{driverName}/{ledName}"
         uniqueId = f"{driverName}_{ledName}"
         message = {
-            discovery.command_topic: "~/set",
+            discovery.command_topic: f"~/{subTopic}/set",
             discovery.schema: "json",
-            discovery.brightness: True
+            discovery.brightness: True,
+            discovery.brightness_scale: 4095,
+            discovery.on_command_type: "brightness"
         }
-        mqtt.send_discovery_message(message, subTopic, uniqueId, discovery.light)
+        mqtt.send_discovery_message(message, uniqueId, discovery.light)
 
     def fade(self, target_brightness, duration_s):
         start_brightness = self.brightness

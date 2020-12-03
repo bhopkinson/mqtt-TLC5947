@@ -5,7 +5,7 @@ import paho.mqtt.client as mqtt
 
 class Mqtt:
     def __init__(self):
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(env.client_id)
 
     def __on_message(self, client, userdata, message):
         print("Message received: " + message.payload.decode())
@@ -26,9 +26,9 @@ class Mqtt:
         if (not client.on_connect) : client.on_connect = self.__on_connect
         if (not client.on_message) : client.on_message = self.__on_message
 
-        client.will_set(status_topic, payload="Offline", retain=True)
+        client.will_set(status_topic, payload="offline", retain=True)
         client.connect(env.broker)
-        client.publish(status_topic, payload="Online", retain=True)
+        client.publish(status_topic, payload="online", retain=True)
 
         client.subscribe(f"{env.topic}/+/+/set", qos=1)
 
@@ -41,11 +41,12 @@ class Mqtt:
 
         self.client.on_message = on_message
 
-    def send_discovery_message(self, message, subTopic, uniqueId, type):
+    def send_discovery_message(self, message, uniqueId, type):
         if (env.discoveryTopic):
-            message[discovery.tilde] = f"{env.topic}/{subTopic}"
             unique_id = f"{env.client_id}_{uniqueId}"
             message[discovery.unique_id] = unique_id
+            message[discovery.availability_topic] = "~/status"
+            message[discovery.tilde] = env.topic
             payload = json.dumps(message)
             topic = f"{env.discoveryTopic}/{type}/{unique_id}/config"
             self.client.publish(topic, payload, qos=0, retain=True)
