@@ -1,6 +1,7 @@
 import json
 import re
 import threading
+import tlc5947
 import queue
 
 class command:
@@ -13,7 +14,7 @@ class command:
         self.transition = parsedMessage["transition"]
 
     def __getLedAddr(self, topic):
-        boardNumber = int(re.search(r"(?<=driver-)\d*", topic).group())
-        ledNumber = int(re.search(r"(?<=led-)\d*", topic).group())
+        driverNumber = int(re.search(f"(?<={tlc5947.driverNamePrefix})\\d*", topic).group())
+        ledNumber = int(re.search(f"(?<={tlc5947.ledNamePrefix})\\d*", topic).group())
 
-        return boardNumber * ledNumber
+        return driverNumber * ledNumber

@@ -5,6 +5,7 @@ broker = os.getenv("BROKER")
 topic = os.getenv("TOPIC")
 discoveryTopic = os.getenv("DISCOVERY_TOPIC")
 driverCount = os.getenv("DRIVER_COUNT")
+latchPin = os.getenv("LATCH_PIN")
 
 if (not client_id): client_id = "1234567890"
 if (not broker): broker = "192.168.0.23"

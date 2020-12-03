@@ -8,21 +8,32 @@ import math
 
 numberOfLeds = 24
 
-def getBoardNumber(addr):
+driverNamePrefix = "driver-"
+ledNamePrefix = "led-"
+
+def getDriverNumber(addr):
     return math.ceil(addr / numberOfLeds)
 
+def getDriverName(driverNumber):
+    return f"{driverNamePrefix}{driverNumber}"
+
 def getLedNumber(addr):
-    boardNumber = getBoardNumber(addr)
-    return addr - ((boardNumber - 1) * numberOfLeds)
+    driverNumber = getDriverNumber(addr)
+    return addr - ((driverNumber - 1) * numberOfLeds)
+
+def getLedName(ledNumber):
+    return f"{ledNamePrefix}{ledNumber}"
 
 class tlc5947:
     def __init__(self):
         self.numberOfLeds = env.driverCount * numberOfLeds
-        
-        # spi = busio.SPI(board.SCLK, board.MOSI, board.MISO)
-        # latch = digitalio.DigitalInOut(board.D4)
-        # self.tlc5947 = adafruit_tlc5947.TLC5947(spi, latch, num_drivers=driverCount)
+
+        # if (env.latchPin):
+        #     spi = busio.SPI(board.SCLK, board.MOSI, board.MISO)
+        #     latch = digitalio.DigitalInOut(getattr(board, env.latchPin))
+        #     self.tlc5947 = adafruit_tlc5947.TLC5947(spi, latch, num_drivers=env.driverCount)
 
     def handle(self, instruction):
         print(f"{instruction.addr}: {instruction.pwm}")
-        #self.tlc5947[instruction.addr] = instruction.pwm
+        if (self.tlc5947):
+            self.tlc5947[instruction.addr] = instruction.pwm

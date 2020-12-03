@@ -46,10 +46,12 @@ class led:
         self.__instructionHandler.handle(instruction.instruction(self.addr, brightness))
 
     def sendDiscovery(self):
-        boardNum = tlc5947.getBoardNumber(self.addr)
+        driverNum = tlc5947.getDriverNumber(self.addr)
+        driverName = tlc5947.getDriverName(driverNum)
         ledNum = tlc5947.getLedNumber(self.addr)
-        subTopic = f"board-{boardNum}/led-{ledNum}"
-        uniqueId = f"board-{boardNum}_led-{ledNum}"
+        ledName = tlc5947.getLedName(ledNum)
+        subTopic = f"{driverName}/{ledName}"
+        uniqueId = f"{driverName}_{ledName}"
         message = {
             discovery.command_topic: "~/set",
             discovery.schema: "json",
