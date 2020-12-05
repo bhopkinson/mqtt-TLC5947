@@ -1,3 +1,4 @@
+import environment as env
 import threading
 import queue
 
@@ -16,6 +17,8 @@ class handler():
         self.thread.start()
 
     def handle(self, item):
+        if (env.logLevel == env.DEBUG):
+            print(f"Handling item: {item}")
         self.queue.put(item)
 
     def set_callback(self, callback):

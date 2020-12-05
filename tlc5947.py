@@ -36,6 +36,7 @@ class tlc5947:
             self.tlc5947 = adafruit_tlc5947.TLC5947(spi, latch, num_drivers=env.driverCount)
 
     def handle(self, instruction):
-        print(f"{instruction.addr}: {instruction.pwm}")
+        if (env.DEBUG == "DEBUG"):
+            print(f"Instruction: {instruction.addr}: {instruction.pwm}")
         if (self.tlc5947):
             self.tlc5947[instruction.addr] = instruction.pwm
