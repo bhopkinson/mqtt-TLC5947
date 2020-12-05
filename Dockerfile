@@ -15,8 +15,7 @@ WORKDIR /home/appuser
 USER appuser
 
 # Run application
-COPY main.py .
-COPY mqtt.py .
+COPY *.py .
 
 CMD ["main.py"]
 ENTRYPOINT ["python3"]
