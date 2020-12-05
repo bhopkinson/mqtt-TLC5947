@@ -7,6 +7,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install dependancies
 COPY requirements.txt .
+RUN pip install RPi
 RUN pip install -r requirements.txt
 
 # Use non-root user
