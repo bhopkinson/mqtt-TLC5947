@@ -50,3 +50,8 @@ class Mqtt:
             payload = json.dumps(message)
             topic = f"{env.discoveryTopic}/{type}/{unique_id}/config"
             self.client.publish(topic, payload, qos=0, retain=True)
+
+    def publish(self, subTopic, message):
+        topic = f"{env.topic}/{subTopic}"
+        payload = json.dumps(message)
+        self.client.publish(topic, payload)

@@ -30,6 +30,7 @@ commandHandler.loop_start()
 
 def on_message(message):
     if message.topic.endswith("set"):
-        commandHandler.handle(command.command(message))
+        if (message.payload is not None):
+            commandHandler.handle(command.command(message))
 
 mqtt.set_on_message_callback(on_message)
