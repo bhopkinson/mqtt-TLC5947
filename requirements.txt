@@ -1,4 +1,4 @@
 paho-mqtt
-RPi.GPIO
+rpi.gpio
 adafruit-blinka
 adafruit-circuitpython-tlc5947
