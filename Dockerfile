@@ -1,6 +1,7 @@
 FROM python:3.8-slim-buster AS base
 
-RUN apt-get install gcc python-dev
+RUN apt-get update
+RUN apt-get install gcc python-dev rpi.gpio
 
 # Setup virtual environment
 ENV VIRTUAL_ENV=/opt/venv
