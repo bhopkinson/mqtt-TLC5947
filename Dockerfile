@@ -9,11 +9,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Use non-root user
-# RUN useradd --create-home appuser
-# WORKDIR /home/appuser
-# USER appuser
-
 # Run application
 COPY *.py .
 

@@ -4,7 +4,7 @@ client_id = os.getenv("CLIENT_ID")
 broker = os.getenv("BROKER")
 topic = os.getenv("TOPIC")
 discoveryTopic = os.getenv("DISCOVERY_TOPIC")
-driverCount = os.getenv("DRIVER_COUNT")
+driverCount = int(os.getenv("DRIVER_COUNT"))
 latchPin = os.getenv("LATCH_PIN")
 
 if (not client_id): client_id = "1234567890"
