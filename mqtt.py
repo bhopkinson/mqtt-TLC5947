@@ -8,7 +8,7 @@ class Mqtt:
         self.client = mqtt.Client(env.client_id)
 
     def __on_message(self, client, userdata, message):
-        print("Message received: " + message.payload.decode())
+        print(f"Message received: {message.topic} {message.payload.decode()}")
 
     def __on_connect(self, client, userdata, flags, rc):
         if rc==0:
