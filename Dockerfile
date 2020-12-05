@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster AS base
+FROM arm32v7/python:3.8-slim-buster AS base
 
 # Setup virtual environment
 ENV VIRTUAL_ENV=/opt/venv
@@ -7,7 +7,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install dependancies
 COPY requirements.txt .
-RUN pip install RPi
 RUN pip install -r requirements.txt
 
 # Use non-root user
