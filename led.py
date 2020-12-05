@@ -39,6 +39,8 @@ class led:
         if (env.discoveryTopic):
             self.sendDiscovery()
 
+        self.publishState()
+
     async def __sleep(self):
         await asyncio.sleep(resolution_ms / 1000)
 
@@ -106,7 +108,7 @@ class controller:
 
     def handle(self, command):
         if (command.ledAddr >= len(self.__leds)):
-            print(f"Error: led address {command.ledAddr} out of bounds. Max address {len(self.__leds)}")
+            print(f"Error: led address {command.ledAddr} out of bounds. Max address {len(self.__leds) - 1}")
             return
 
         led = self.__leds[command.ledAddr]
