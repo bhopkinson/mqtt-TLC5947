@@ -105,7 +105,7 @@ class controller:
         self.__leds = [led(i, instructionHandler) for i in range (num_leds)]
 
     def handle(self, command):
-        if (command.ledAddr >= len(self.__leds.len)):
+        if (command.ledAddr >= len(self.__leds)):
             print(f"Error: led address {command.ledAddr} out of bounds. Max address {len(self.__leds)}")
             return
 
