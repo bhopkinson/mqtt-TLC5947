@@ -10,9 +10,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Use non-root user
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
+# RUN useradd --create-home appuser
+# WORKDIR /home/appuser
+# USER appuser
 
 # Run application
 COPY *.py .
