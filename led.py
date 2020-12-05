@@ -106,7 +106,7 @@ class controller:
 
     def handle(self, command):
         if (command.ledAddr >= self.__leds.count):
-            print(f"Error: led address {command.ledAddr} out of bounds. Max address {self.__leds.count}"):
+            print(f"Error: led address {command.ledAddr} out of bounds. Max address {self.__leds.count}")
             return
 
         led = self.__leds[command.ledAddr]
