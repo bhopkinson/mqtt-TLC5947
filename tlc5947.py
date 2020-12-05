@@ -20,7 +20,7 @@ def getDriverName(driverNumber):
 
 def getLedNumber(addr):
     driverNumber = getDriverNumber(addr)
-    return 1 + addr - ((driverNumber - 1) * numberOfLeds)
+    return addr - ((driverNumber - 1) * numberOfLeds)
 
 def getLedName(ledNumber):
     return f"{ledNamePrefix}{ledNumber}"

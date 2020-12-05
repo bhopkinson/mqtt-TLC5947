@@ -105,7 +105,7 @@ class controller:
         self.__leds = [led(i, instructionHandler) for i in range (num_leds)]
 
     def handle(self, command):
-        led = self.__leds[command.ledAddr - 1]
+        led = self.__leds[command.ledAddr]
 
         transition = 0
         if (command.transition):
