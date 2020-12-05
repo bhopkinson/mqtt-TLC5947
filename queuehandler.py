@@ -9,7 +9,11 @@ class handler():
     def loop_start(self):
         def loopInternal():
             while True:
+                if (env.logLevel == env.DEBUG):
+                    print(f"Queue loop: {self}")
                 item = self.queue.get()
+                if (env.logLevel == env.DEBUG):
+                    print(f"Got queue item: {item}")
                 if (self.callback):
                     self.callback(item)
 
