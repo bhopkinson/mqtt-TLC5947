@@ -1,4 +1,4 @@
-FROM arm32v7/python:3.8-slim-buster AS base
+FROM arm32v7/python:3.8-buster AS base
 
 # Setup virtual environment
 ENV VIRTUAL_ENV=/opt/venv
