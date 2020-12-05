@@ -1,5 +1,8 @@
 FROM arm32v7/python:3.8-slim-buster AS base
 
+RUN apt-get update
+RUN apt-get gcc python-dev
+
 # Setup virtual environment
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
