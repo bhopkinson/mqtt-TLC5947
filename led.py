@@ -24,6 +24,7 @@ class led:
         self.addr = addr
         self.storedBrightness = 4095
         self.__internalBrightness = 0
+        self.__target_brightness = 0
         self.__instructionHandler = instructionHandler
         self.__task = None
 
