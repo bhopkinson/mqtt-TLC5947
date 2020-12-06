@@ -59,6 +59,10 @@ class led:
     #     self.__instructionHandler.handle(instruction.instruction(self.addr, brightness))
 
     def __set_internalBrightness(self, brightness):
+        if (brightness > 4095):
+            print (f"Brightness value of {brightness} is greater than max allowed 4095.")
+            return
+
         self.__internalBrightness = brightness
         self.__instructionHandler.handle(instruction.instruction(self.addr, brightness))
 
@@ -95,7 +99,7 @@ class led:
         async def loop():
             while self.__internalBrightness != target_brightness:
                 elapsed = time.perf_counter() - start_time
-                new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s))
+                new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s) / duration_s)
                 if (elapsed >= duration_s):
                     new_brightness = target_brightness
                 self.__set_internalBrightness(new_brightness)
