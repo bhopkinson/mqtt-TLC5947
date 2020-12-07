@@ -26,7 +26,7 @@ ledController = led.controller(tlc5947.numberOfLeds, instructionHandler)
 
 def on_command(command):
     if (env.logLevel == env.DEBUG):
-        print(f"on_command: {instruction}")
+        print(f"on_command: {command}")
     ledController.handle(command)
 
 commandHandler = queuehandler.handler()

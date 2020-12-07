@@ -17,12 +17,12 @@ class handler():
                 if (self.callback):
                     self.callback(item)
 
-        self.thread = threading.Thread(target=loopInternal)
+        self.thread = threading.Thread(target=loopInternal, daemon=True)
         self.thread.start()
 
     def handle(self, item):
         if (env.logLevel == env.DEBUG):
-            print(f"Handling item: {item}")
+            print(f"Adding item to queue: {item}")
         self.queue.put(item)
 
     def set_callback(self, callback):
