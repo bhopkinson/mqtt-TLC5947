@@ -17,7 +17,7 @@ class handler():
                 if (self.callback):
                     self.callback(item)
 
-        self.thread = threading.Thread(target=loopInternal, daemon=True)
+        self.thread = threading.Thread(target=loopInternal)
         self.thread.start()
 
     def handle(self, item):
