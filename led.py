@@ -93,6 +93,9 @@ class led:
         mqtt.publish(self.__stateTopic, message)
 
     def fade(self, target_brightness, duration_s):
+        if (env.logLevel == env.DEBUG):
+            print(f"fade: target: {target_brightness}, duration: {duration_s}")
+
         self.__target_brightness = target_brightness
         start_brightness = self.__internalBrightness
         start_time = time.perf_counter()
@@ -119,9 +122,15 @@ class controller:
 
         led = self.__leds[command.ledAddr]
 
+        if (env.logLevel == env.DEBUG):
+            print(f"LED: {led.addr}")
+
         transition = 0
         if (command.transition):
             transition = command.transition
+
+        if (env.logLevel == env.DEBUG):
+            print(f"transition: {transition}")
 
         if (command.state == 'ON'):
             if (command.brightness is not None):
