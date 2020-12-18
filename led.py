@@ -3,11 +3,13 @@ import concurrent
 import discovery
 import environment as env
 import instruction
+import random
 import time
 from threading import Thread
 import tlc5947
 
 resolution_ms = 15
+max_brightness = 4095
 
 def start_background_loop(loop: asyncio.AbstractEventLoop):
     asyncio.set_event_loop(loop)
@@ -22,7 +24,7 @@ mqtt = None
 class led:
     def __init__(self, addr, instructionHandler):
         self.addr = addr
-        self.storedBrightness = 4095
+        self.storedBrightness = max_brightness
         self.__target_brightness = 0
         self.__instructionHandler = instructionHandler
         self.__task = None
@@ -56,8 +58,8 @@ class led:
         if (env.logLevel == env.DEBUG):
             print (f"__set_internalBrightness: {brightness}")
 
-        if (brightness > 4095):
-            print (f"Brightness value of {brightness} is greater than max allowed 4095.")
+        if (brightness > max_brightness):
+            print (f"Brightness value of {brightness} is greater than max allowed {max_brightness}.")
             return
 
         self.__internalBrightness = brightness
@@ -69,7 +71,7 @@ class led:
             discovery.state_topic: f"~/{self.__stateTopic}",
             discovery.schema: "json",
             discovery.brightness: True,
-            discovery.brightness_scale: 4095,
+            discovery.brightness_scale: max_brightness,
             discovery.effect: True,
             discovery.effect_list: ["fire_flicker", "spark"]
         }
@@ -114,11 +116,22 @@ class led:
 
                     self.__set_internalBrightness(new_brightness)
                     await self.__sleep()
-                    
+
                 except Exception as e:
                     print(f"Exception in led {self.addr} loop: {e}")
                     break
 
+
+        self.__run_loop(loop())
+
+    def fire_flicker(self):
+        self.storedBrightness = max_brightness
+        half_brightness = max_brightness / 2
+        async def loop():
+            new_brightness = random.randint(half_brightness, max_brightness)
+            self.__set_internalBrightness(new_brightness)
+            delay = random.randint(10, 100) / 1000
+            await asyncio.sleep(delay)
 
         self.__run_loop(loop())
 
@@ -137,19 +150,22 @@ class controller:
             if (env.logLevel == env.DEBUG):
                 print(f"LED: {led.addr}")
 
-            transition = 0
-            if (command.transition):
-                transition = command.transition
-
-            if (env.logLevel == env.DEBUG):
-                print(f"transition: {transition}")
-
-            if (command.state == 'ON'):
-                if (command.brightness is not None):
-                    led.storedBrightness = command.brightness
-                led.fade(led.storedBrightness, transition)
+            if (command.effect == "fire_flicker"):
+                led.fire_flicker()
             else:
-                led.fade(0, transition)
+                transition = 0
+                if (command.transition):
+                    transition = command.transition
+
+                if (env.logLevel == env.DEBUG):
+                    print(f"transition: {transition}")
+
+                if (command.state == 'ON'):
+                    if (command.brightness is not None):
+                        led.storedBrightness = command.brightness
+                    led.fade(led.storedBrightness, transition)
+                else:
+                    led.fade(0, transition)
         except Exception as e:
             print(f"Exception while handling command {command}: {e}")
         finally:

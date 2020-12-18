@@ -27,6 +27,10 @@ class command:
                 if (env.logLevel is env.DEBUG and self.transition):
                     print(f"Command parsed transition: {self.transition}")
 
+                self.effect = parsedMessage.get("effect")
+                if (env.logLevel is env.DEBUG and self.effect):
+                    print(f"Command parsed effect: {self.effect}")
+
         except:
             print("Error parsing message")
 
