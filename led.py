@@ -149,20 +149,19 @@ class led:
 
     def spark(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
-        spark_probability = 0.75
+        spark_probability = 0.20
         async def loop():
             try:
                 while True:
-                    if (1 - random.random() >= spark_probability):
+                    if (random.random() <= spark_probability):
                         new_brightness = random.randint(3000, max_brightness)
-                        delay_ms = random.randint(5, 75)
                     else:
-                        low_brightness = max(self.storedBrightness - 500, 0)
-                        high_brightness = min(self.storedBrightness + 500, max_brightness)
+                        low_brightness = max(self.storedBrightness - 200, 0)
+                        high_brightness = min(self.storedBrightness + 200, max_brightness)
                         new_brightness = random.randint(low_brightness, high_brightness)
-                        delay_ms = random.randint(10, 150)
                     self.__set_internalBrightness(new_brightness)
-                    await asyncio.sleep(delay_ms / 1000)
+                    delay = random.randint(5, 55) / 1000
+                    await asyncio.sleep(delay)
             except Exception as e:
                 print(f"Exception in led {self.addr} spark loop: {e}")
         
