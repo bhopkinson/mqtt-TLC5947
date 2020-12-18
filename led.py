@@ -132,11 +132,11 @@ class led:
 
     def fire_flicker(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
-        min_brightness = max(400, self.storedBrightness - 3100)
+        min_brightness = max(500, self.storedBrightness - 2750)
         async def loop():
             try:
                 while True:
-                    new_brightness = random.randint(min_brightness, self.storedBrightness)
+                    new_brightness = random.randint(min(min_brightness, self.storedBrightness), max(min_brightness, self.storedBrightness))
                     delay = random.randint(10, 100) / 1000
                     if (env.logLevel == env.DEBUG):
                         print(f"Led {self.addr} fire flicker: brightness: {new_brightness}, delay: {delay}")
