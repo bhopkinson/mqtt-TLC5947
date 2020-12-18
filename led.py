@@ -149,15 +149,15 @@ class led:
 
     def spark(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
-        spark_probability = 0.20
+        spark_probability = 0.05
         async def loop():
             try:
                 while True:
                     if (random.random() <= spark_probability):
                         new_brightness = random.randint(3000, max_brightness)
                     else:
-                        low_brightness = max(self.storedBrightness - 200, 0)
-                        high_brightness = min(self.storedBrightness + 200, max_brightness)
+                        low_brightness = max(self.storedBrightness - 225, 0)
+                        high_brightness = min(self.storedBrightness + 225, max_brightness)
                         new_brightness = random.randint(low_brightness, high_brightness)
                     self.__set_internalBrightness(new_brightness)
                     delay = random.randint(5, 55) / 1000
