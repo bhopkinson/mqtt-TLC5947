@@ -23,10 +23,11 @@ class led:
     def __init__(self, addr, instructionHandler):
         self.addr = addr
         self.storedBrightness = 4095
-        self.__internalBrightness = 0
         self.__target_brightness = 0
         self.__instructionHandler = instructionHandler
         self.__task = None
+
+        self.__set_internalBrightness(0)
 
         self.__driverNum = tlc5947.getDriverNumber(self.addr)
         self.__driverName = tlc5947.getDriverName(self.__driverNum)
