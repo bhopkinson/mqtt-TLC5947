@@ -132,7 +132,7 @@ class led:
 
     def fire_flicker(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
-        min_brightness = 40
+        min_brightness = min(400, self.storedBrightness - 3100)
         async def loop():
             try:
                 while True:
@@ -162,8 +162,10 @@ class controller:
             if (env.logLevel == env.DEBUG):
                 print(f"LED: {led.addr}")
 
-            effect = command.effect or led.effect              
-            if (effect == effect_none or command.brightness == 0):
+            if (command.effect):
+                led.effect = command.effect   
+                           
+            if (led.effect == effect_none or command.brightness == 0):
                 transition = 0
                 if (command.transition):
                     transition = command.transition
@@ -178,7 +180,7 @@ class controller:
                 else:
                     led.fade(0, transition)
 
-            elif (effect == effect_fire_flicker):
+            elif (led.effect == effect_fire_flicker):
                 led.fire_flicker(command.brightness)
 
         except Exception as e:
