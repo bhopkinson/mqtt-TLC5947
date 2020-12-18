@@ -110,15 +110,18 @@ class led:
                 print(f"Begin led {self.addr} loop")
 
             while self.__internalBrightness != target_brightness:
-                if (env.logLevel == env.DEBUG):
-                    print(f"Led {self.addr} loop")
+                try:
+                    if (env.logLevel == env.DEBUG):
+                        print(f"Led {self.addr} loop")
 
-                elapsed = time.perf_counter() - start_time
-                new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s) / duration_s)
-                if (elapsed >= duration_s):
-                    new_brightness = target_brightness
-                self.__set_internalBrightness(new_brightness)
-                await self.__sleep()
+                    elapsed = time.perf_counter() - start_time
+                    new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s) / duration_s)
+                    if (elapsed >= duration_s):
+                        new_brightness = target_brightness
+                    self.__set_internalBrightness(new_brightness)
+                    await self.__sleep()
+                except Exception as e:
+                    print(f"Exception in led {self.addr} loop: {e}")
 
         self.__run_loop(loop())
 
