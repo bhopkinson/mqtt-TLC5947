@@ -52,15 +52,6 @@ class led:
 
         self.__task = asyncio.run_coroutine_threadsafe(loop, event_loop)
 
-    # @property
-    # def brightness(self):
-    #     return self.__internalBrightness
-
-    # @brightness.setter
-    # def brightness(self, brightness):
-    #     self.__internalBrightness = brightness
-    #     self.__instructionHandler.handle(instruction.instruction(self.addr, brightness))
-
     def __set_internalBrightness(self, brightness):
         if (env.logLevel == env.DEBUG):
             print (f"__set_internalBrightness: {brightness}")
@@ -115,13 +106,19 @@ class led:
                         print(f"Led {self.addr} loop")
 
                     elapsed = time.perf_counter() - start_time
-                    new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s) / duration_s)
-                    if (elapsed >= duration_s):
+
+                    if (elapsed >= duration_s or duration_s == 0):
                         new_brightness = target_brightness
+                    else:
+                        new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s) / duration_s)
+
                     self.__set_internalBrightness(new_brightness)
                     await self.__sleep()
+                    
                 except Exception as e:
                     print(f"Exception in led {self.addr} loop: {e}")
+                    break
+
 
         self.__run_loop(loop())
 
@@ -130,27 +127,33 @@ class controller:
         self.__leds = [led(i, instructionHandler) for i in range (num_leds)]
 
     def handle(self, command):
-        if (command.ledAddr >= len(self.__leds)):
-            print(f"Error: led address {command.ledAddr} out of bounds. Max address {len(self.__leds) - 1}")
-            return
+        try:
+            if (command.ledAddr >= len(self.__leds)):
+                print(f"Error: led address {command.ledAddr} out of bounds. Max address {len(self.__leds) - 1}")
+                return
 
-        led = self.__leds[command.ledAddr]
+            led = self.__leds[command.ledAddr]
 
-        if (env.logLevel == env.DEBUG):
-            print(f"LED: {led.addr}")
+            if (env.logLevel == env.DEBUG):
+                print(f"LED: {led.addr}")
 
-        transition = 0
-        if (command.transition):
-            transition = command.transition
+            transition = 0
+            if (command.transition):
+                transition = command.transition
 
-        if (env.logLevel == env.DEBUG):
-            print(f"transition: {transition}")
+            if (env.logLevel == env.DEBUG):
+                print(f"transition: {transition}")
 
-        if (command.state == 'ON'):
-            if (command.brightness is not None):
-                led.storedBrightness = command.brightness
-            led.fade(led.storedBrightness, transition)
-        else:
-            led.fade(0, transition)
-
-        led.publishState()
+            if (command.state == 'ON'):
+                if (command.brightness is not None):
+                    led.storedBrightness = command.brightness
+                led.fade(led.storedBrightness, transition)
+            else:
+                led.fade(0, transition)
+        except Exception as e:
+            print(f"Exception while handling command {command}: {e}")
+        finally:
+            try:
+                led.publishState()
+            except Exception as e:
+                print(f"Exception while publishing state for led {led.addr}: {e}")
