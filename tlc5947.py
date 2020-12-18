@@ -38,7 +38,7 @@ class tlc5947:
     def handle(self, instruction):
         if (env.DEBUG == "DEBUG"):
             print(f"Instruction: {instruction.addr}: {instruction.pwm}")
-        if (instruction.pwm < 0 or instruction > 4095):
+        if (instruction.pwm < 0 or instruction.pwm > 4095):
             print(f"Instruction PWM {instruction.pwm} out of range [0...4095]")
         elif (self.tlc5947):
             self.tlc5947[instruction.addr] = instruction.pwm
