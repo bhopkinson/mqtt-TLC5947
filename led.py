@@ -149,7 +149,7 @@ class led:
 
     def spark(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
-        spark_probability = 0.05
+        spark_probability = 0.1
         async def loop():
             try:
                 while True:
@@ -182,28 +182,29 @@ class controller:
             if (env.logLevel == env.DEBUG):
                 print(f"LED: {led.addr}")
 
-            if (command.effect):
-                led.effect = command.effect   
+            if (command.state == 'ON'):
+                if (command.effect):
+                    led.effect = command.effect   
 
-            if (led.effect == effect_none or command.brightness == 0):
-                transition = 0
-                if (command.transition):
-                    transition = command.transition
+                if (led.effect == effect_none or command.brightness == 0):
+                    transition = 0
+                    if (command.transition):
+                        transition = command.transition
 
-                if (env.logLevel == env.DEBUG):
-                    print(f"transition: {transition}")
+                    if (env.logLevel == env.DEBUG):
+                        print(f"transition: {transition}")
 
-                if (command.state == 'ON'):
-                    if (command.brightness is not None):
-                        led.storedBrightness = command.brightness
-                    led.fade(led.storedBrightness, transition)
-                else:
-                    led.fade(0, transition)
+                        if (command.brightness is not None):
+                            led.storedBrightness = command.brightness
+                        led.fade(led.storedBrightness, transition)
 
-            elif (led.effect == effect_fire_flicker):
-                led.fire_flicker(command.brightness)
-            elif (led.effect == effect_spark):
-                led.spark(command.brightness)
+                elif (led.effect == effect_fire_flicker):
+                    led.fire_flicker(command.brightness)
+                elif (led.effect == effect_spark):
+                    led.spark(command.brightness)
+
+            else:
+                led.fade(0, transition)
 
         except Exception as e:
             print(f"Exception while handling command {command}: {e}")
