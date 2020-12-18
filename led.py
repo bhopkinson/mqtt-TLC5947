@@ -47,7 +47,9 @@ class led:
         await asyncio.sleep(resolution_ms / 1000)
 
     def __run_loop(self, loop):
-        if (self.__task is not None): self.__task.cancel()
+        if (self.__task is not None):
+            self.__task.cancel()
+
         self.__task = asyncio.run_coroutine_threadsafe(loop, event_loop)
 
     # @property
@@ -60,6 +62,9 @@ class led:
     #     self.__instructionHandler.handle(instruction.instruction(self.addr, brightness))
 
     def __set_internalBrightness(self, brightness):
+        if (env.logLevel == env.DEBUG):
+            print (f"__set_internalBrightness: {brightness}")
+
         if (brightness > 4095):
             print (f"Brightness value of {brightness} is greater than max allowed 4095.")
             return
@@ -101,7 +106,13 @@ class led:
         start_time = time.perf_counter()
         brightness_diff = target_brightness - start_brightness
         async def loop():
+            if (env.logLevel == env.DEBUG):
+                print(f"Begin led {self.addr} loop")
+
             while self.__internalBrightness != target_brightness:
+                if (env.logLevel == env.DEBUG):
+                    print(f"Led {self.addr} loop")
+
                 elapsed = time.perf_counter() - start_time
                 new_brightness = start_brightness + round(brightness_diff * min(elapsed, duration_s) / duration_s)
                 if (elapsed >= duration_s):
