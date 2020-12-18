@@ -21,10 +21,15 @@ t.start()
 
 mqtt = None
 
+effect_none = "None"
+effect_fire_flicker = "Fire flicker"
+effect_spark = "Spark"
+
 class led:
     def __init__(self, addr, instructionHandler):
         self.addr = addr
         self.storedBrightness = max_brightness
+        self.effect = effect_none
         self.__target_brightness = 0
         self.__instructionHandler = instructionHandler
         self.__task = None
@@ -73,7 +78,7 @@ class led:
             discovery.brightness: True,
             discovery.brightness_scale: max_brightness,
             discovery.effect: True,
-            discovery.effect_list: ["fire_flicker", "spark"]
+            discovery.effect_list: [effect_none, effect_fire_flicker, effect_spark]
         }
         mqtt.send_discovery_message(message, self.__uniqueId, discovery.light)
 
@@ -85,7 +90,8 @@ class led:
 
         message = {
             "state": state,
-            "brightness": self.storedBrightness
+            "brightness": self.storedBrightness,
+            "effect": self.effect
         }
 
         mqtt.publish(self.__stateTopic, message)
@@ -124,13 +130,13 @@ class led:
 
         self.__run_loop(loop())
 
-    def fire_flicker(self):
-        self.storedBrightness = max_brightness
-        half_brightness = int(max_brightness / 2)
+    def fire_flicker(self, brightness):
+        self.storedBrightness = brightness or self.storedBrightness
+        min_brightness = 40
         async def loop():
             try:
                 while True:
-                    new_brightness = random.randint(half_brightness, max_brightness)
+                    new_brightness = random.randint(min_brightness, self.storedBrightness)
                     delay = random.randint(10, 100) / 1000
                     if (env.logLevel == env.DEBUG):
                         print(f"Led {self.addr} fire flicker: brightness: {new_brightness}, delay: {delay}")
@@ -156,9 +162,8 @@ class controller:
             if (env.logLevel == env.DEBUG):
                 print(f"LED: {led.addr}")
 
-            if (command.effect == "fire_flicker"):
-                led.fire_flicker()
-            else:
+            effect = command.effect or led.effect              
+            if (effect == effect_none or command.brightness == 0):
                 transition = 0
                 if (command.transition):
                     transition = command.transition
@@ -172,6 +177,10 @@ class controller:
                     led.fade(led.storedBrightness, transition)
                 else:
                     led.fade(0, transition)
+
+            elif (effect == effect_fire_flicker):
+                led.fire_flicker(command.brightness)
+
         except Exception as e:
             print(f"Exception while handling command {command}: {e}")
         finally:
