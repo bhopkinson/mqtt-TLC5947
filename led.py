@@ -157,9 +157,9 @@ class led:
                         new_brightness = random.randint(3000, max_brightness)
                         delay_ms = random.randint(5, 75)
                     else:
-                        min_brightness = max(self.storedBrightness - 500, 0)
-                        max_brightness = min(self.storedBrightness + 500, max_brightness)
-                        new_brightness = random.randint(min_brightness, max_brightness)
+                        low_brightness = max(self.storedBrightness - 500, 0)
+                        high_brightness = min(self.storedBrightness + 500, max_brightness)
+                        new_brightness = random.randint(low_brightness, high_brightness)
                         delay_ms = random.randint(10, 150)
                     self.__set_internalBrightness(new_brightness)
                     await asyncio.sleep(delay_ms / 1000)
