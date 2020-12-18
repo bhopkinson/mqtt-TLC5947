@@ -132,7 +132,7 @@ class led:
 
     def fire_flicker(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
-        min_brightness = min(400, self.storedBrightness - 3100)
+        min_brightness = max(400, self.storedBrightness - 3100)
         async def loop():
             try:
                 while True:
@@ -164,7 +164,7 @@ class controller:
 
             if (command.effect):
                 led.effect = command.effect   
-                           
+
             if (led.effect == effect_none or command.brightness == 0):
                 transition = 0
                 if (command.transition):
