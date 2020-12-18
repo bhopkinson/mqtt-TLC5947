@@ -147,6 +147,27 @@ class led:
 
         self.__run_loop(loop())
 
+    def spark(self, brightness):
+        self.storedBrightness = brightness or self.storedBrightness
+        spark_probability = 0.75
+        async def loop():
+            try:
+                while True:
+                    if (1 - random.random() >= spark_probability):
+                        new_brightness = random.randint(3000, max_brightness)
+                        delay_ms = random.randint(5, 75)
+                    else:
+                        min_brightness = max(self.storedBrightness - 500, 0)
+                        max_brightness = min(self.storedBrightness + 500, max_brightness)
+                        new_brightness = random.randint(min_brightness, max_brightness)
+                        delay_ms = random.randint(10, 150)
+                    self.__set_internalBrightness(new_brightness)
+                    await asyncio.sleep(delay_ms / 1000)
+            except Exception as e:
+                print(f"Exception in led {self.addr} spark loop: {e}")
+        
+        self.__run_loop(loop())
+
 class controller:
     def __init__(self, num_leds, instructionHandler):
         self.__leds = [led(i, instructionHandler) for i in range (num_leds)]
@@ -182,6 +203,8 @@ class controller:
 
             elif (led.effect == effect_fire_flicker):
                 led.fire_flicker(command.brightness)
+            elif (led.effect == effect_spark):
+                led.spark(command.brightness)
 
         except Exception as e:
             print(f"Exception while handling command {command}: {e}")
