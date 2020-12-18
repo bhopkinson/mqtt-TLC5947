@@ -118,7 +118,7 @@ class led:
                     await self.__sleep()
 
                 except Exception as e:
-                    print(f"Exception in led {self.addr} loop: {e}")
+                    print(f"Exception in led {self.addr} fade loop: {e}")
                     break
 
 
@@ -126,12 +126,17 @@ class led:
 
     def fire_flicker(self):
         self.storedBrightness = max_brightness
-        half_brightness = max_brightness / 2
+        half_brightness = int(max_brightness / 2)
         async def loop():
-            new_brightness = random.randint(half_brightness, max_brightness)
-            self.__set_internalBrightness(new_brightness)
-            delay = random.randint(10, 100) / 1000
-            await asyncio.sleep(delay)
+            try:
+                new_brightness = random.randint(half_brightness, max_brightness)
+                delay = random.randint(10, 100) / 1000
+                if (env.logLevel == env.DEBUG):
+                    print(f"Led {self.addr} fire flicker: brightness: {new_brightness}, delay: {delay}")
+                self.__set_internalBrightness(new_brightness)
+                await asyncio.sleep(delay)
+            except Exception as e:
+                print(f"Exception in led {self.addr} fire_flicker loop: {e}")
 
         self.__run_loop(loop())
 
