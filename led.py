@@ -158,7 +158,7 @@ class led:
                     wide_range_brightness = random.randint(0 - self.storedBrightness - 750, self.storedBrightness + 750) # use wide range to add weighting to min and max values
                     new_brightness = min(max(0, wide_range_brightness), self.storedBrightness)
                     self.__set_internalBrightness(new_brightness)
-                    await asyncio.sleep(150)
+                    await asyncio.sleep(random.randint(80, 500) / 1000)
             except Exception as e:
                 print(f"Exception in led {self.addr} street_light_flicker loop: {e}")
 
