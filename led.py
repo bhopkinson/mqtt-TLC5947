@@ -155,7 +155,7 @@ class led:
         async def loop():
             try:
                 while True:
-                    wide_range_brightness = random.randint(-300, self.storedBrightness + 300) # use wide range to add weighting to min and max values
+                    wide_range_brightness = random.randint(0 - self.storedBrightness - 1000, self.storedBrightness + 1000) # use wide range to add weighting to min and max values
                     new_brightness = min(max(0, wide_range_brightness), self.storedBrightness)
                     self.__set_internalBrightness(new_brightness)
                     await self.__sleep()
