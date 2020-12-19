@@ -23,7 +23,7 @@ mqtt = None
 
 effect_none = "None"
 effect_fire_flicker = "Fire flicker"
-effect_spark = "Spark"
+effect_welding_spark = "Welding spark"
 
 class led:
     def __init__(self, addr, instructionHandler):
@@ -78,7 +78,7 @@ class led:
             discovery.brightness: True,
             discovery.brightness_scale: max_brightness,
             discovery.effect: True,
-            discovery.effect_list: [effect_none, effect_fire_flicker, effect_spark]
+            discovery.effect_list: [effect_none, effect_fire_flicker, effect_welding_spark]
         }
         mqtt.send_discovery_message(message, self.__uniqueId, discovery.light)
 
@@ -132,6 +132,7 @@ class led:
 
     def fire_flicker(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
+        self.__target_brightness = self.storedBrightness
         min_brightness = max(500, self.storedBrightness - 2750)
         async def loop():
             try:
@@ -147,15 +148,16 @@ class led:
 
         self.__run_loop(loop())
 
-    def spark(self, brightness):
+    def welding_spark(self, brightness):
         self.storedBrightness = brightness or self.storedBrightness
+        self.__target_brightness = self.storedBrightness
         spark_probability = 0.05
         async def loop():
             try:
                 while True:
                     if (random.random() <= spark_probability):
                         new_brightness = random.randint(3000, max_brightness)
-                        delay_ms = random.randint(5, 150)
+                        delay_ms = random.randint(10, 200)
                     else:
                         low_brightness = max(self.storedBrightness - 225, 0)
                         high_brightness = min(self.storedBrightness + 225, max_brightness)
@@ -206,7 +208,7 @@ class controller:
                 elif (led.effect == effect_fire_flicker):
                     led.fire_flicker(command.brightness)
                 elif (led.effect == effect_spark):
-                    led.spark(command.brightness)
+                    led.welding_spark(command.brightness)
 
         except Exception as e:
             print(f"Exception while handling command {command}: {e}")
